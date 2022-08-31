@@ -10,21 +10,23 @@ export default function Stock() {
 
   const { symbol } = useParams()
   useEffect(() => {
+    let active = true
     const PORT = process.env.PORT || 3001
     const url = `http://localhost:${PORT}/stocks/${symbol}`
     const fetchData = async () => {
       const response = await axios.get(url)
       const formattedRes = response.data
-      setStockTxns(formattedRes.stockTxns)
-      setStockPrices(formattedRes.stockPrices)
+      if (active) {
+        setStockTxns(formattedRes.stockTxns)
+        setStockPrices(formattedRes.stockPrices)
+      }
     }
     fetchData()
+    console.log('effect triggered')
+    return () => {
+      active = false
+    }
   }, [symbol])
-
-  //   const createTxnDataPoints = () => {
-  //     const txnChartData = { dates: [], txnData: [] }
-
-  //   }
 
   return (
     <div>
